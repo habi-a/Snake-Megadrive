@@ -13,29 +13,17 @@ void joyHandler(u16 joy, u16 changed, u16 state)
 {
     if (joy == JOY_1) {
         if (state & BUTTON_UP)
-        {
-            if (direction != down) {
+            if (direction != down)
                 steer = up;
-            }
-        }
         if (state & BUTTON_DOWN)
-        {
-            if (direction != up) {
+            if (direction != up)
                 steer = down;
-            }
-        }
         if (state & BUTTON_LEFT)
-        {
-            if (direction != right) {
+            if (direction != right)
                 steer = left;
-            }
-        }
         if (state & BUTTON_RIGHT)
-        {
-            if (direction != left) {
+            if (direction != left)
                 steer = right;
-            }
-        }
     }
 }
 
@@ -64,8 +52,8 @@ void steerSnake(Vect2D_s16 *snakeHead)
         }
         count = 0;
     }
-    else ++count;
-
+    else 
+        ++count;
 }
 
 void updateSnakePosition(Vect2D_s16 *snakeHead, Vect2D_u16 *resolution)
@@ -152,7 +140,8 @@ int main()
     snakeHead.y = (screenHeight / 2) / 8 * 8;
 
     t_body_list *snakeBody;
-    snakeBody = init_body();
+    if ((snakeBody = init_body()) == NULL)
+        return (1);
 
     Vect2D_u16 fruit;
     generateRandomFruitPos(&fruit, snakeBody, &snakeHead, resolution);
@@ -189,12 +178,13 @@ int main()
         updateSnakePosition(&snakeHead, &resolution);
 
         if (isSnakeEatHimself(snakeBody, &snakeHead))
-            return (0); // Game Over
+           break;
 
         if (isSnakeEatFruit(&snakeHead, &fruit)) {
             generateRandomFruitPos(&fruit, snakeBody, &snakeHead, resolution);
             VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_USERINDEX + 2), fruit.x / 8, fruit.y / 8);
-            push_front_body(snakeBody);
+            if (!push_front_body(snakeBody))
+                break;
             score++;
         }
 
@@ -212,8 +202,7 @@ int main()
         if (snakeBody->size > 0) {
             snakeBodyLastPosition.x = snakeBody->first->x;
             snakeBodyLastPosition.y = snakeBody->first->y;
-        }
-        else {
+        } else {
             snakeBodyLastPosition.x = snakeHeadLastPosition.x;
             snakeBodyLastPosition.y = snakeHeadLastPosition.y;
         }

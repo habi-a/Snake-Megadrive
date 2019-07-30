@@ -5,17 +5,21 @@ t_body_list *init_body()
     t_body_list *list;
 
     list = (t_body_list*)MEM_alloc(sizeof(t_body_list));
+    if (list == NULL)
+        return (NULL);
     list->first = NULL;
     list->last = NULL;
     list->size = 0;
     return (list);
 }
 
-void push_front_body(t_body_list *list)
+u8 push_front_body(t_body_list *list)
 {
     t_body_node *new_node;
 
     new_node = (t_body_node*)MEM_alloc(sizeof(t_body_node));
+    if (new_node == NULL)
+        return(0);
     new_node->next = list->first;
     new_node->prev = NULL;
     if (list->first) 
@@ -24,6 +28,7 @@ void push_front_body(t_body_list *list)
         list->last = new_node;
     list->first = new_node;
     list->size++;
+    return (1);
 }
 
 void body_follow_head(t_body_list *list, Vect2D_s16 *snakeHeadLastPosition)
