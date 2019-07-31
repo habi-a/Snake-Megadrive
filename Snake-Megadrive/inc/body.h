@@ -28,10 +28,8 @@ typedef struct              s_body_list
 
 
 t_body_list                 *init_body();
-void                        push_front_body(t_body_list *list);
+u8                          push_front_body(t_body_list *list);
 void                        free_body(t_body_list *list);
-
-
 void                        body_follow_head(t_body_list *list, Vect2D_s16 *snakeHead);
 
 #endif // _BODY_H_

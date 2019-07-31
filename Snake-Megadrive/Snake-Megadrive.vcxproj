@@ -90,10 +90,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\body.c" />
+    <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\game_over.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\menu.c" />
+    <ClCompile Include="src\win.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\body.h" />
+    <ClInclude Include="inc\states.h" />
     <ClInclude Include="inc\tiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
