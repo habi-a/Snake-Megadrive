@@ -10,7 +10,7 @@ void init_win_params()
 void winJoyHandler(u16 joy, u16 changed, u16 state)
 {
     if (joy == JOY_1) {
-        if (state & BUTTON_UP)
+        if (state & BUTTON_START)
             player_relaunch = 1;
     }
 }

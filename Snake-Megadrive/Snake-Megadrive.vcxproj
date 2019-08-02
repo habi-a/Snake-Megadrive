@@ -66,25 +66,25 @@
     <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
     <NMakeOutput>out\rom.out</NMakeOutput>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>./inc;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
+    <IncludePath>./inc;./res;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
     <NMakeOutput>out\rom.out</NMakeOutput>
     <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>./inc;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
+    <IncludePath>./inc;./res;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
     <NMakeOutput>out\rom.out</NMakeOutput>
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>./inc;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
+    <IncludePath>./inc;./res;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <NMakeBuildCommandLine>%GDK_WIN%\bin\make -f %GDK_WIN%\makefile.gen</NMakeBuildCommandLine>
     <NMakeOutput>out\rom.out</NMakeOutput>
     <NMakePreprocessorDefinitions>NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>./inc;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
+    <IncludePath>./inc;./res;D:\SGDK\res;D:\SGDK\inc;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
@@ -100,6 +100,24 @@
     <ClInclude Include="inc\body.h" />
     <ClInclude Include="inc\states.h" />
     <ClInclude Include="inc\tiles.h" />
+    <ClInclude Include="res\eat-sound.h" />
+    <ClInclude Include="res\game-background.h" />
+    <ClInclude Include="res\game-background.res" />
+    <ClInclude Include="res\intro.h" />
+    <ClInclude Include="res\menu-background.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\eat_sound.res" />
+    <Resource Include="res\intro.res" />
+    <Resource Include="res\menu-background.res" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\game-background.bmp" />
+    <Image Include="res\menu-background.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\eat-sound.wav" />
+    <Media Include="res\intro.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

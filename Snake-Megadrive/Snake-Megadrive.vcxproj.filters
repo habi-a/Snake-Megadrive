@@ -44,5 +44,47 @@
     <ClInclude Include="inc\states.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="res\game-background.res">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="res\eat-sound.h">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="res\game-background.h">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="res\intro.h">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="res\menu-background.h">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\menu-background.res">
+      <Filter>Fichiers de ressources</Filter>
+    </Resource>
+    <Resource Include="res\eat_sound.res">
+      <Filter>Fichiers de ressources</Filter>
+    </Resource>
+    <Resource Include="res\intro.res">
+      <Filter>Fichiers de ressources</Filter>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\game-background.bmp">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="res\menu-background.bmp">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\eat-sound.wav">
+      <Filter>Fichiers de ressources</Filter>
+    </Media>
+    <Media Include="res\intro.wav">
+      <Filter>Fichiers de ressources</Filter>
+    </Media>
   </ItemGroup>
 </Project>

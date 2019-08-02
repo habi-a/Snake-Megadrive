@@ -1,4 +1,6 @@
 #include "body.h"
+#include "eat-sound.h"
+#include "game-background.h"
 #include "tiles.h"
 
 u8 count;
@@ -6,6 +8,7 @@ u8 direction;
 u8 steer;
 u8 current_level;
 u8 level_speed;
+u8 is_bonus;
 
 void init_game_params()
 {
@@ -14,6 +17,7 @@ void init_game_params()
     steer = 0;
     current_level = 1;
     level_speed = 5;
+    is_bonus = 0;
 }
 
 void gameJoyHandler(u16 joy, u16 changed, u16 state)
@@ -56,6 +60,7 @@ void steerSnake(Vect2D_s16 *snakeHead)
             snakeHead->x += 8;
             direction = right;
             break;
+
         }
         count = 0;
     }
@@ -76,9 +81,27 @@ void updateSnakePosition(Vect2D_s16 *snakeHead, Vect2D_u16 *resolution)
         snakeHead->y = resolution->y + (snakeHead->y % resolution->y);
 }
 
+u8 snakeIsOut(Vect2D_s16* snakeHead, Vect2D_u16* resolution)
+{
+    if (snakeHead->x >= resolution->x)
+        return (1);
+    else if (snakeHead->x < 0)
+        return (1);
+    if (snakeHead->y >= resolution->y)
+        return (1);
+    else if (snakeHead->y < 0)
+        return (1);
+    return (0);
+}
+
 u8 isSnakeEatFruit(Vect2D_s16 *snakeHead, Vect2D_u16 *fruit)
 {
     return ((snakeHead->x == fruit->x) && (snakeHead->y == fruit->y));
+}
+
+u8 isSnakeEatBonus(Vect2D_s16* snakeHead, Vect2D_u16* bonus)
+{
+    return (is_bonus && (snakeHead->x == bonus->x) && (snakeHead->y == bonus->y));
 }
 
 u8 isSnakeEatHimself(t_body_list *snakeBody, Vect2D_s16 *snakeHead)
@@ -105,6 +128,18 @@ u8 isFruitOnSnake(t_body_list *snakeBody, Vect2D_u16 *fruit)
     return (0);
 }
 
+u8 isBonusOnSnake(t_body_list* snakeBody, Vect2D_u16* bonus)
+{
+    t_body_node* current = snakeBody->first;
+
+    while (current != NULL) {
+        if ((bonus->x / 8 == current->x) && (bonus->y / 8 == current->y))
+            return (1);
+        current = current->next;
+    }
+    return (0);
+}
+
 void generateRandomFruitPos(Vect2D_u16 *fruit, t_body_list *snakeBody, Vect2D_s16 *snakeHead, Vect2D_u16 resolution)
 {
     while (TRUE) {
@@ -112,6 +147,17 @@ void generateRandomFruitPos(Vect2D_u16 *fruit, t_body_list *snakeBody, Vect2D_s1
         fruit->y = (random() % screenHeight) / 8 * 8;
 
         if (!isSnakeEatFruit(snakeHead, fruit) && !isFruitOnSnake(snakeBody, fruit))
+            break;
+    }
+}
+
+void generateRandomBonusPos(Vect2D_u16* bonus, t_body_list* snakeBody, Vect2D_s16* snakeHead, Vect2D_u16 resolution)
+{
+    while (TRUE) {
+        bonus->x = (random() % screenWidth) / 8 * 8;
+        bonus->y = (random() % screenHeight) / 8 * 8;
+
+        if (!isSnakeEatBonus(snakeHead, bonus) && !isBonusOnSnake(snakeBody, bonus))
             break;
     }
 }
@@ -158,6 +204,9 @@ u8 play()
     Vect2D_u16 fruit;
     generateRandomFruitPos(&fruit, snakeBody, &snakeHead, resolution);
 
+    Vect2D_u16 bonus;
+
+    //VDP_drawImage(PLAN_A, &game_background, 0, 0);
     VDP_setPaletteColor(0, 0x2a2);
     VDP_setBackgroundColor(37);
 
@@ -166,10 +215,11 @@ u8 play()
     VDP_loadTileData((const u32*)tileSnake, TILE_USERINDEX, 1, CPU);
     VDP_loadTileData((const u32*)tileBody, TILE_USERINDEX + 1, 1, CPU);
     VDP_loadTileData((const u32*)tileFruit, TILE_USERINDEX + 2, 1, CPU);
+    VDP_loadTileData((const u32*)tileBonus, TILE_USERINDEX + 3, 1, CPU);
 
     VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_USERINDEX + 2), fruit.x / 8, fruit.y / 8);
 
-    while (score < 40)
+    while (score < 50)
     {
         switch (current_level)
         {
@@ -191,17 +241,35 @@ u8 play()
         }
 
         steerSnake(&snakeHead);
-        updateSnakePosition(&snakeHead, &resolution);
+
+        if (current_level < 5)
+            updateSnakePosition(&snakeHead, &resolution);
+        else if (snakeIsOut(&snakeHead, &resolution))
+            return (0);
 
         if (isSnakeEatHimself(snakeBody, &snakeHead))
-           break;
-
-        if (isSnakeEatFruit(&snakeHead, &fruit)) {
+            break;
+        else if (isSnakeEatFruit(&snakeHead, &fruit)) {
             generateRandomFruitPos(&fruit, snakeBody, &snakeHead, resolution);
             VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL1, 1, 0, 0, TILE_USERINDEX + 2), fruit.x / 8, fruit.y / 8);
             if (!push_front_body(snakeBody))
                 return (2);
             score++;
+            XGM_setLoopNumber(0);
+            SND_setPCM_XGM(65, eat_sound, sizeof(eat_sound));
+            SND_startPlayPCM_XGM(65, 1, SOUND_PCM_CH2);
+            if (!is_bonus && random() % 10 == 5) {
+                generateRandomBonusPos(&bonus, snakeBody, &snakeHead, resolution);
+                VDP_setTileMapXY(PLAN_B, TILE_ATTR_FULL(PAL0, 1, 0, 0, TILE_USERINDEX + 3), bonus.x / 8, bonus.y / 8);
+                is_bonus = 1;
+            }
+        } 
+        else if (isSnakeEatBonus(&snakeHead, &bonus)) {
+            is_bonus = 0;
+            score += 3;
+            XGM_setLoopNumber(0);
+            SND_setPCM_XGM(65, eat_sound, sizeof(eat_sound));
+            SND_startPlayPCM_XGM(65, 1, SOUND_PCM_CH2);
         }
 
         if (count == 0)
@@ -232,8 +300,10 @@ u8 play()
             current_level = 2;
         else if (score > 19 && score < 30)
             current_level = 3;
-        else if (score > 29)
+        else if (score > 29 && score < 40)
             current_level = 4;
+        else if (score > 39)
+            current_level = 5;
 
         char levelStr[1];
         intToStr(current_level, levelStr, 0);
@@ -245,7 +315,7 @@ u8 play()
 
     free_body(snakeBody);
 
-    if (score > 39)
+    if (score > 49)
         return (1);
     return (0);
 }

@@ -1,0 +1,1 @@
+IMAGE game_background "game-background.bmp"
